@@ -27,7 +27,6 @@ public class DepthFirstSearcher extends Searcher {
 	public boolean search() {
 		// FILL THIS METHOD
 
-		// explored list is a 2D Boolean array that indicates if a state associated with a given position in the maze has already been explored.
 		boolean[][] explored = new boolean[maze.getNoOfRows()][maze.getNoOfCols()];
 
 		for(int i=0; i<explored.length; i++){
@@ -43,33 +42,24 @@ public class DepthFirstSearcher extends Searcher {
 				}
 			}
 		}
-		// ...
-
-		// Stack implementing the Frontier list
 		LinkedList<State> stack = new LinkedList<State>();
 		
 		stack.add(new State(maze.getPlayerSquare(), null, 0, 0));
+		maxSizeOfFrontier = Math.max(maxSizeOfFrontier, stack.size());
 
 		State expandedState = null;
-		State prevState = null;
 		while (!stack.isEmpty()) {
 			expandedState = stack.pop();
 			noOfNodesExpanded++;
-			if(prevState!=null && expandedState.getDepth() <= prevState.getDepth()){
-				while(prevState!=null && prevState.getDepth()>=expandedState.getDepth()){
-					cost-=1;
-					maze.setOneSquare(prevState.getSquare(), ' ');
-					prevState = prevState.getParent();
-				}
-			}else{
-				cost=expandedState.getGValue();
-			}
-			if(expandedState.getGValue()!=0 && !expandedState.isGoal(maze)){
-				maze.setOneSquare(expandedState.getSquare(), '.');
-			}
+			cost=expandedState.getGValue();
 			maxDepthSearched = Math.max(expandedState.getDepth(), maxDepthSearched);
 			explored[expandedState.getX()][expandedState.getY()] = true;
 			if(expandedState.isGoal(maze)){
+				State parentGoal = expandedState.getParent();
+				while (parentGoal != null && parentGoal.getGValue() != 0) {
+					maze.setOneSquare(parentGoal.getSquare(), '.');
+					parentGoal = parentGoal.getParent();
+				}
 				return true;
 			}
 			
@@ -77,30 +67,14 @@ public class DepthFirstSearcher extends Searcher {
 			
 			for(State child : childrenStates){
 				int index = getIndexOfChild(child, stack);
-				if(index!=-1){
-					/*State oldChild = stack.get(index);
-					if(child.getGValue() < oldChild.getGValue()){
-						stack.set(index, child);
-					}*/
-				}else{
+				if(index==-1){
 					stack.push(child);
 				}
 				
 			}
 			maxSizeOfFrontier = Math.max(maxSizeOfFrontier, stack.size());
-			// TODO return true if find a solution
-			// TODO maintain the cost, noOfNodesExpanded (a.k.a. noOfNodesExplored),
-			// maxDepthSearched, maxSizeOfFrontier during
-			// the search
-			// TODO update the maze if a solution found
-
-			// use stack.pop() to pop the stack.
-			// use stack.push(...) to elements to stack
-			prevState = expandedState;
 		}
 		return false;
-
-		// TODO return false if no solution
 	}
 
 	private int getIndexOfChild(State child, LinkedList<State> stack) {
