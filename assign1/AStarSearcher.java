@@ -47,6 +47,7 @@ public class AStarSearcher extends Searcher {
 			// use frontier.poll() to extract the minimum stateFValuePair.
 			// use frontier.add(...) to add stateFValue pairs
 		}
+		return false;
 
 		// TODO return false if no solution
 	}

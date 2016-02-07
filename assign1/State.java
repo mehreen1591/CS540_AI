@@ -44,6 +44,35 @@ public class State {
 	 * @return all the successors of the current state
 	 */
 	public ArrayList<State> getSuccessors(boolean[][] explored, Maze maze) {
+		
+		ArrayList<State> unvisitedNeighbors = new ArrayList<State>();
+		int xVal = getX();
+		int yVal = getY();
+		if(xVal!=0){
+			if(maze.getSquareValue(xVal-1, yVal)!='%' &&explored[xVal-1][yVal]!=true){
+				State unvisitedState= new State(new Square(xVal-1, yVal), this, getGValue()+1, getDepth()+1);
+				unvisitedNeighbors.add(unvisitedState);
+			}
+		}
+		if(yVal!=maze.getNoOfRows()-1){
+			if(maze.getSquareValue(xVal, yVal+1)!='%' &&explored[xVal][yVal+1]!=true){
+				State unvisitedState= new State(new Square(xVal, yVal+1), this, getGValue()+1, getDepth()+1);
+				unvisitedNeighbors.add(unvisitedState);
+			}
+		}
+		if(xVal!=maze.getNoOfCols()-1){
+			if(maze.getSquareValue(xVal+1, yVal)!='%' &&explored[xVal+1][yVal]!=true){
+				State unvisitedState= new State(new Square(xVal+1, yVal), this, getGValue()+1, getDepth()+1);
+				unvisitedNeighbors.add(unvisitedState);
+			}
+		}
+		if(yVal!=0){
+			if(maze.getSquareValue(xVal, yVal-1)!='%' &&explored[xVal][yVal-1]!=true){
+				State unvisitedState= new State(new Square(xVal, yVal-1), this, getGValue()+1, getDepth()+1);
+				unvisitedNeighbors.add(unvisitedState);
+			}
+		}
+		return unvisitedNeighbors;
 		// FILL THIS METHOD
 
 		// TODO check all four neighbors (up, right, down, left)
