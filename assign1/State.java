@@ -48,27 +48,27 @@ public class State {
 		ArrayList<State> unvisitedNeighbors = new ArrayList<State>();
 		int xVal = getX();
 		int yVal = getY();
-		if(xVal!=0){
-			if(maze.getSquareValue(xVal-1, yVal)!='%' &&explored[xVal-1][yVal]!=true){
-				State unvisitedState= new State(new Square(xVal-1, yVal), this, getGValue()+1, getDepth()+1);
+		if(yVal!=0){ //left
+			if(maze.getSquareValue(xVal, yVal-1)!='%' && explored[xVal][yVal-1]!=true){
+				State unvisitedState= new State(new Square(xVal, yVal-1), this, getGValue()+1, getDepth()+1);
 				unvisitedNeighbors.add(unvisitedState);
 			}
 		}
-		if(yVal!=maze.getNoOfRows()-1){
-			if(maze.getSquareValue(xVal, yVal+1)!='%' &&explored[xVal][yVal+1]!=true){
-				State unvisitedState= new State(new Square(xVal, yVal+1), this, getGValue()+1, getDepth()+1);
-				unvisitedNeighbors.add(unvisitedState);
-			}
-		}
-		if(xVal!=maze.getNoOfCols()-1){
+		if(xVal!=maze.getNoOfRows()-1){//down
 			if(maze.getSquareValue(xVal+1, yVal)!='%' &&explored[xVal+1][yVal]!=true){
 				State unvisitedState= new State(new Square(xVal+1, yVal), this, getGValue()+1, getDepth()+1);
 				unvisitedNeighbors.add(unvisitedState);
 			}
 		}
-		if(yVal!=0){
-			if(maze.getSquareValue(xVal, yVal-1)!='%' &&explored[xVal][yVal-1]!=true){
-				State unvisitedState= new State(new Square(xVal, yVal-1), this, getGValue()+1, getDepth()+1);
+		if(yVal!=maze.getNoOfCols()-1){//right
+			if(maze.getSquareValue(xVal, yVal+1)!='%' &&explored[xVal][yVal+1]!=true){
+				State unvisitedState= new State(new Square(xVal, yVal+1), this, getGValue()+1, getDepth()+1);
+				unvisitedNeighbors.add(unvisitedState);
+			}
+		}
+		if(xVal!=0){//up
+			if(maze.getSquareValue(xVal-1, yVal)!='%' &&explored[xVal-1][yVal]!=true){
+				State unvisitedState= new State(new Square(xVal-1, yVal), this, getGValue()+1, getDepth()+1);
 				unvisitedNeighbors.add(unvisitedState);
 			}
 		}

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Depth-First Search (DFS)
@@ -50,15 +51,43 @@ public class DepthFirstSearcher extends Searcher {
 		stack.add(new State(maze.getPlayerSquare(), null, 0, 0));
 
 		State expandedState = null;
+		State prevState = null;
 		while (!stack.isEmpty()) {
 			expandedState = stack.pop();
-			
+			noOfNodesExpanded++;
+			if(prevState!=null && expandedState.getDepth() <= prevState.getDepth()){
+				while(prevState!=null && prevState.getDepth()>=expandedState.getDepth()){
+					cost-=1;
+					maze.setOneSquare(prevState.getSquare(), ' ');
+					prevState = prevState.getParent();
+				}
+			}else{
+				cost=expandedState.getGValue();
+			}
+			if(expandedState.getGValue()!=0 && !expandedState.isGoal(maze)){
+				maze.setOneSquare(expandedState.getSquare(), '.');
+			}
+			maxDepthSearched = Math.max(expandedState.getDepth(), maxDepthSearched);
 			explored[expandedState.getX()][expandedState.getY()] = true;
+			if(expandedState.isGoal(maze)){
+				return true;
+			}
+			
 			ArrayList<State> childrenStates = expandedState.getSuccessors(explored, maze);
 			
 			for(State child : childrenStates){
-				stack.add(child);
+				int index = getIndexOfChild(child, stack);
+				if(index!=-1){
+					/*State oldChild = stack.get(index);
+					if(child.getGValue() < oldChild.getGValue()){
+						stack.set(index, child);
+					}*/
+				}else{
+					stack.push(child);
+				}
+				
 			}
+			maxSizeOfFrontier = Math.max(maxSizeOfFrontier, stack.size());
 			// TODO return true if find a solution
 			// TODO maintain the cost, noOfNodesExpanded (a.k.a. noOfNodesExplored),
 			// maxDepthSearched, maxSizeOfFrontier during
@@ -67,9 +96,19 @@ public class DepthFirstSearcher extends Searcher {
 
 			// use stack.pop() to pop the stack.
 			// use stack.push(...) to elements to stack
+			prevState = expandedState;
 		}
 		return false;
 
 		// TODO return false if no solution
+	}
+
+	private int getIndexOfChild(State child, LinkedList<State> stack) {
+		for(int i=0; i<stack.size(); i++){
+			if(child.getX() == stack.get(i).getX() && child.getY() == stack.get(i).getY()){
+				return i;
+			}
+		}
+		return -1;
 	}
 }
